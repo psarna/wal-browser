@@ -35,14 +35,18 @@ fn inspect(file: std::fs::File) -> std::io::Result<()> {
         // Decode the frame header fields based on the provided specification
         let page_number = file.read_u32::<BigEndian>()?;
         let commit_size = file.read_u32::<BigEndian>()?;
-        let salt_1 = file.read_u32::<BigEndian>()?;
-        let salt_2 = file.read_u32::<BigEndian>()?;
+        let frame_salt_1 = file.read_u32::<BigEndian>()?;
+        let frame_salt_2 = file.read_u32::<BigEndian>()?;
         let checksum_1 = file.read_u32::<BigEndian>()?;
         let checksum_2 = file.read_u32::<BigEndian>()?;
         let _ = file.seek(SeekFrom::Current(page_size as i64));
 
+        if salt_1 != frame_salt_1 || salt_2 != frame_salt_2 {
+            println!("--- WAL end (it contains more frames with mismatched SALT values, which means they're leftovers from previous checkpoints)");
+        }
+
         // Print the decoded information for each frame header
-        println!("{i}: page={page_number} size_after={commit_size} salt={salt_1:08x}-{salt_2:08x} checksum={checksum_1:08x}-{checksum_2:08x}");
+        println!("{i}: page={page_number} size_after={commit_size} salt={frame_salt_1:08x}-{frame_salt_2:08x} checksum={checksum_1:08x}-{checksum_2:08x}");
     }
 
     Ok(())
