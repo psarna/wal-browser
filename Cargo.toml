@@ -5,7 +5,7 @@ edition = "2021"
 license = "MIT"
 description = "WAL file browser for libSQL/SQLite"
 keywords = ["database", "wal", "sqlite", "libsql"]
-repository = "http://github.com/psarna/wal-browser"
+repository = "https://github.com/psarna/wal-browser"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
